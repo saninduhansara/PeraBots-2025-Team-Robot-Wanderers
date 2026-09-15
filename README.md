@@ -142,7 +142,7 @@ $$\theta_{\text{align}} = |d_{\text{lb}} - d_{\text{lf}}|$$
 The target wall spacing is defined by `INPUT_DISTANCE = 10.0 cm`. A region threshold `ERROR_DIST = 3.0 cm` categorizes the robot's spatial state:
 - **Inside Deadband**: Minimal corrections required.
 - **Outside Margin**: Active proportional steering to pull back towards the baseline.
-- **Angular Misalignment**: When $\theta_{\text{align}} > \text{MAX\_ALIGN\_ANGLE}$ (threshold: 5.0 cm), heading realignment takes precedence.
+- **Angular Misalignment**: When heading deviation $\theta_{\text{align}}$ exceeds `MAX_ALIGN_ANGLE` (threshold: 5.0 cm), heading realignment takes precedence.
 
 ---
 
@@ -154,23 +154,9 @@ $$e(t) = \bar{d}(t) - d_{\text{target}}$$
 
 At each discrete timestep $\Delta t = 0.032\text{ s}$:
 
-- **Integral Term**:
-
-  $$
-  I(t) = I(t - 1) + e(t) \cdot \Delta t
-  $$
-
-- **Derivative Term**:
-
-  $$
-  D(t) = \frac{e(t) - e(t - 1)}{\Delta t}
-  $$
-
-- **Total Control Output**:
-
-  $$
-  u(t) = K_p \cdot e(t) + K_i \cdot I(t) + K_d \cdot D(t)
-  $$
+- **Integral Term**: $I(t) = I(t - 1) + e(t) \cdot \Delta t$
+- **Derivative Term**: $\displaystyle D(t) = \frac{e(t) - e(t - 1)}{\Delta t}$
+- **Total Control Output**: $u(t) = K_p \cdot e(t) + K_i \cdot I(t) + K_d \cdot D(t)$
 
 The steering output $u(t)$ alters the differential velocities:
 
@@ -178,7 +164,7 @@ $$v_{\text{left}} = V_{\text{base}} - u(t)$$
 
 $$v_{\text{right}} = V_{\text{base}} + u(t)$$
 
-Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le \text{MAX\_DIFFERENCE}$, capped at 6.0 rad/s) to prevent spinning out or wheel slip.
+Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le 6.0\text{ rad/s}$, via `MAX_DIFFERENCE`) to prevent spinning out or wheel slip.
 
 ---
 
@@ -187,28 +173,12 @@ Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le \text
 The script [`controllers/test1perabots/botwanders.py`](controllers/test1perabots/botwanders.py) automates the tuning of control parameters using continuous oscillation analysis:
 
 1. **Error Stream Sampling**: Webots streams timestamped errors to `error.txt`.
-
-2. **Sub-Sample Zero-Crossing Interpolation**:
-   When consecutive error samples change sign ($e_{k-1} \cdot e_k < 0$), the precise zero-crossing timestamp $t^{\ast}$ is computed:
-
-   $$
-   t^{\ast} = t_{k-1} + (0 - e_{k-1}) \cdot \frac{t_k - t_{k-1}}{e_k - e_{k-1}}
-   $$
-
-3. **Ultimate Period ($T_u$) Extraction**:
-   From $N$ consecutive zero-crossing intervals, the ultimate oscillation period is calculated:
-
-   $$
-   T_u = \frac{1}{N} \sum_{i=1}^{N} (t^{\ast}_{i+2} - t^{\ast}_i)
-   $$
-
-4. **Ziegler-Nichols Gain Estimation**:
-   With ultimate gain $K_u$, the optimal PID parameters are calculated:
-
-   $$
-   K_p = 0.6 \cdot K_u, \qquad K_i = \frac{1.2 \cdot K_u}{T_u}, \qquad K_d = 0.075 \cdot K_u \cdot T_u
-   $$
-
+2. **Sub-Sample Zero-Crossing Interpolation**: When consecutive error samples change sign ($e_{k-1} \cdot e_k < 0$), the precise zero-crossing timestamp $t^{\ast}$ is computed:
+   $\displaystyle t^{\ast} = t_{k-1} + (0 - e_{k-1}) \cdot \frac{t_k - t_{k-1}}{e_k - e_{k-1}}$
+3. **Ultimate Period ($T_u$) Extraction**: From $N$ consecutive zero-crossing intervals, the ultimate oscillation period is calculated:
+   $\displaystyle T_u = \frac{1}{N} \sum_{i=1}^{N} (t^{\ast}_{i+2} - t^{\ast}_i)$
+4. **Ziegler-Nichols Gain Estimation**: With ultimate gain $K_u$, the optimal PID parameters are calculated:
+   $K_p = 0.6 \cdot K_u, \quad \displaystyle K_i = \frac{1.2 \cdot K_u}{T_u}, \quad K_d = 0.075 \cdot K_u \cdot T_u$
 5. **Hot-Reload Dispatch**: Updated constants are written into `pid_constants.txt` and immediately integrated by the active simulation.
 
 ---
