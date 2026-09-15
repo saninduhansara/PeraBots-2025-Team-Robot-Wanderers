@@ -1,0 +1,153 @@
+<?xml version="1.0"?>
+<robot name="D:/Maze Solver/New folder/Undergraduate_exampleArena_new/protos/Robot.urdf" xmlns:xacro="http://ros.org/wiki/xacro">
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.04" length="0.04"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.04" length="0.04"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="left" type="continuous">
+    <parent link="base_link"/>
+    <child link="solid(1)"/>
+    <axis xyz="0 0.000796 -1"/>
+    <limit effort="10" velocity="10"/>
+    <origin xyz="0 0.040056 -0.00997" rpy="1.57 1.103792 0"/>
+  </joint>
+  <link name="solid(1)">
+    <visual>
+      <origin xyz="0 0.000002 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.026" length="0.009"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.000002 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.026" length="0.009"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="right" type="continuous">
+    <parent link="base_link"/>
+    <child link="solid"/>
+    <axis xyz="0 0.000796 -1"/>
+    <limit effort="10" velocity="10"/>
+    <origin xyz="0 -0.040054 -0.00997" rpy="-1.571593 -0.838663 3.141593"/>
+  </joint>
+  <link name="solid">
+    <visual>
+      <origin xyz="0 0.000002 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.026" length="0.009"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0.000002 0" rpy="0 0 0"/>
+      <geometry>
+        <cylinder radius="0.026" length="0.009"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="CAM">
+  </link>
+  <joint name="base_link_CAM_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="CAM"/>
+    <origin xyz="0 0.000002 0" rpy="-1.570796 0 -1.570796"/>
+  </joint>
+  <link name="rightsensor">
+    <visual>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_link_rightsensor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="rightsensor"/>
+    <origin xyz="0.01 -0.04 0" rpy="0 0 -1.57"/>
+  </joint>
+  <link name="frontsensor">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_link_frontsensor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="frontsensor"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="leftcornersensor">
+    <visual>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_link_leftcornersensor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="leftcornersensor"/>
+    <origin xyz="0 0 0" rpy="0 0 0.78"/>
+  </joint>
+  <link name="leftsensor">
+    <visual>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="base_link_leftsensor_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="leftsensor"/>
+    <origin xyz="0 0 0" rpy="0 0 1.57"/>
+  </joint>
+  <link name="camera">
+  </link>
+  <joint name="base_link_camera_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="camera"/>
+    <origin xyz="0 0 0" rpy="-1.570796 0 -1.570796"/>
+  </joint>
+  <link name="gps">
+  </link>
+  <joint name="base_link_gps_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="gps"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="solid_0">
+  </link>
+  <joint name="gps_solid_0_joint" type="fixed">
+    <parent link="gps"/>
+    <child link="solid_0"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+</robot>
