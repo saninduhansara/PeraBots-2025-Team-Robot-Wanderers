@@ -92,21 +92,21 @@ The robot is modeled as a compact two-wheel differential drive platform with a c
 
 | Specification | Value | Description |
 | :--- | :--- | :--- |
-| **Chassis Radius** | $37.0\text{ mm}$ ($0.037\text{ m}$) | Compact circular footprint |
-| **Total Mass** | $0.15\text{ kg}$ | Center of mass balanced at $z = 0.015\text{ m}$ |
-| **Wheel Radius** | $20.0\text{ mm}$ ($0.02\text{ m}$) | Left & right rotational drive |
-| **Base Velocity** | $6.0\text{ rad/s}$ | Nominal forward speed |
-| **Max Velocity** | $6.27\text{ - }6.28\text{ rad/s}$ | Safe motor actuator ceiling |
-| **Controller Timestep** | $32\text{ ms}$ | Control frequency $\approx 31.25\text{ Hz}$ |
+| **Chassis Radius** | 37.0 mm (0.037 m) | Compact circular footprint |
+| **Total Mass** | 0.15 kg | Center of mass balanced at $z = 0.015\text{ m}$ |
+| **Wheel Radius** | 20.0 mm (0.02 m) | Left & right rotational drive |
+| **Base Velocity** | 6.0 rad/s | Nominal forward speed |
+| **Max Velocity** | 6.27 - 6.28 rad/s | Safe motor actuator ceiling |
+| **Controller Timestep** | 32 ms | Control frequency $\approx 31.25\text{ Hz}$ |
 
 ### Sensor Suite Layout
 
 | Device Tag | Sensor Type | Mounting Orientation | Primary Role |
 | :---: | :---: | :---: | :--- |
-| `lf` | Distance Sensor (Infrared) | Left-Front ($75^\circ / 1.309\text{ rad}$) | Primary wall distance measurement |
-| `lb` | Distance Sensor (Infrared) | Left-Back ($75^\circ / 1.309\text{ rad}$) | Attitude / alignment angle estimation |
-| `fs` | Sonar Distance Sensor | Front Center ($0^\circ$) | Forward collision detection ($< 10\text{ cm}$) |
-| `lc` | Distance Sensor (Infrared) | Left-Corner ($75^\circ / 1.31\text{ rad}$) | Corner turn transition detection |
+| `lf` | Distance Sensor (Infrared) | Left-Front (75° / 1.309 rad) | Primary wall distance measurement |
+| `lb` | Distance Sensor (Infrared) | Left-Back (75° / 1.309 rad) | Attitude / alignment angle estimation |
+| `fs` | Sonar Distance Sensor | Front Center (0°) | Forward collision detection (< 10 cm) |
+| `lc` | Distance Sensor (Infrared) | Left-Corner (75° / 1.31 rad) | Corner turn transition detection |
 
 ### Software Dataflow
 
@@ -142,7 +142,7 @@ $$\theta_{\text{align}} = |d_{\text{lb}} - d_{\text{lf}}|$$
 The target wall spacing is defined by `INPUT_DISTANCE = 10.0 cm`. A region threshold `ERROR_DIST = 3.0 cm` categorizes the robot's spatial state:
 - **Inside Deadband**: Minimal corrections required.
 - **Outside Margin**: Active proportional steering to pull back towards the baseline.
-- **Angular Misalignment**: When $\theta_{\text{align}} > \text{MAX\_ALIGN\_ANGLE}$, heading realignment takes precedence.
+- **Angular Misalignment**: When $\theta_{\text{align}} >$ `MAX_ALIGN_ANGLE` (threshold: 5.0 cm), heading realignment takes precedence.
 
 ---
 
@@ -154,18 +154,22 @@ $$e(t) = \bar{d}(t) - d_{\text{target}}$$
 
 At each discrete timestep $\Delta t = 0.032\text{ s}$:
 
-$$\text{Integral: } I(t) = I(t - 1) + e(t) \cdot \Delta t$$
+- **Integral Term**:
+  $$I(t) = I(t - 1) + e(t) \cdot \Delta t$$
 
-$$\text{Derivative: } D(t) = \frac{e(t) - e(t - 1)}{\Delta t}$$
+- **Derivative Term**:
+  $$D(t) = \frac{e(t) - e(t - 1)}{\Delta t}$$
 
-$$\text{Control Output: } u(t) = K_p \cdot e(t) + K_i \cdot I(t) + K_d \cdot D(t)$$
+- **Total Control Output**:
+  $$u(t) = K_p \cdot e(t) + K_i \cdot I(t) + K_d \cdot D(t)$$
 
 The steering output $u(t)$ alters the differential velocities:
 
 $$v_{\text{left}} = V_{\text{base}} - u(t)$$
+
 $$v_{\text{right}} = V_{\text{base}} + u(t)$$
 
-Differential limits are clamped ($|v_L - v_R| \le \text{MAX\_DIFFERENCE}$) to prevent spinning out or wheel slip.
+Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le$ `MAX_DIFFERENCE`, capped at 6.0 rad/s) to prevent spinning out or wheel slip.
 
 ---
 
@@ -190,7 +194,7 @@ The script [`controllers/test1perabots/botwanders.py`](controllers/test1perabots
 
 ### 4. Reactive Collision Avoidance & Corner Handling
 
-- **Front Obstacle Intervention**: If the front sonar reading drops below `COLLISION_DISTANCE` ($10.0\text{ cm}$), the controller overrides PID guidance and executes an evasive turn away from the obstacle.
+- **Front Obstacle Intervention**: If the front sonar reading drops below `COLLISION_DISTANCE` (10.0 cm), the controller overrides PID guidance and executes an evasive turn away from the obstacle.
 - **Corner Transition Detection**: The left-corner sensor (`lc`) distinguishes between smooth straight walls, outer turns, and pocket recesses, preventing false wall-tracking lockups.
 
 ---
@@ -204,9 +208,9 @@ The robot's tracking accuracy and path fidelity were evaluated across both **Out
 </p>
 
 ### Performance Highlights:
-- **Outer Wall Tracking**: Features smoother curvatures and gradual bends, exhibiting minimal oscillation amplitude and fast convergence to the $10\text{ cm}$ setpoint.
+- **Outer Wall Tracking**: Features smoother curvatures and gradual bends, exhibiting minimal oscillation amplitude and fast convergence to the 10 cm setpoint.
 - **Inner Wall Tracking**: Introduces sharper radii and acute obstacle contours. The combination of angle-alignment checks and derivative damping ($K_d$) maintains stability without boundary collisions.
-- **Dynamic Stability**: Settling time under step disturbances remains within $1.5\text{ s}$.
+- **Dynamic Stability**: Settling time under step disturbances remains within 1.5 s.
 
 ---
 
