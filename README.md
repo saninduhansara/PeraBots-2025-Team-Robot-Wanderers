@@ -21,23 +21,23 @@
 
 ## 📌 Table of Contents
 
-- [Overview](#-overview)
-- [Key Features](#-key-features)
-- [Simulation Showcase](#-simulation-showcase)
-- [Engineering Logbook](#-engineering-logbook)
-- [System Architecture & Robot Model](#-system-architecture--robot-model)
-- [Control Algorithms & Auto-Tuning](#-control-algorithms--auto-tuning)
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Simulation Showcase](#simulation-showcase)
+- [Engineering Logbook](#engineering-logbook)
+- [System Architecture & Robot Model](#system-architecture--robot-model)
+- [Control Algorithms & Auto-Tuning](#control-algorithms--auto-tuning)
   - [1. Dual-Sensor Wall-Following Control](#1-dual-sensor-wall-following-control)
   - [2. Closed-Loop PID Control Formulation](#2-closed-loop-pid-control-formulation)
   - [3. Online Ziegler-Nichols Auto-Tuner](#3-online-ziegler-nichols-auto-tuner)
   - [4. Reactive Collision Avoidance & Corner Handling](#4-reactive-collision-avoidance--corner-handling)
-- [Performance & Benchmark Analysis](#-performance--benchmark-analysis)
-- [Repository Structure](#-repository-structure)
-- [Prerequisites & Dependencies](#-prerequisites--dependencies)
-- [Getting Started & How to Run](#-getting-started--how-to-run)
-- [Current Tuned Constants](#-current-tuned-constants)
-- [Contributors & Team](#-contributors--team)
-- [Acknowledgments](#-acknowledgments)
+- [Performance & Benchmark Analysis](#performance--benchmark-analysis)
+- [Repository Structure](#repository-structure)
+- [Prerequisites & Dependencies](#prerequisites--dependencies)
+- [Getting Started & How to Run](#getting-started--how-to-run)
+- [Current Tuned Constants](#current-tuned-constants)
+- [Contributors & Team](#contributors--team)
+- [Acknowledgments](#acknowledgments)
 
 ---
 
@@ -142,7 +142,7 @@ $$\theta_{\text{align}} = |d_{\text{lb}} - d_{\text{lf}}|$$
 The target wall spacing is defined by `INPUT_DISTANCE = 10.0 cm`. A region threshold `ERROR_DIST = 3.0 cm` categorizes the robot's spatial state:
 - **Inside Deadband**: Minimal corrections required.
 - **Outside Margin**: Active proportional steering to pull back towards the baseline.
-- **Angular Misalignment**: When $\theta_{\text{align}} >$ `MAX_ALIGN_ANGLE` (threshold: 5.0 cm), heading realignment takes precedence.
+- **Angular Misalignment**: When $\theta_{\text{align}} > \text{MAX\_ALIGN\_ANGLE}$ (threshold: 5.0 cm), heading realignment takes precedence.
 
 ---
 
@@ -155,13 +155,22 @@ $$e(t) = \bar{d}(t) - d_{\text{target}}$$
 At each discrete timestep $\Delta t = 0.032\text{ s}$:
 
 - **Integral Term**:
-  $$I(t) = I(t - 1) + e(t) \cdot \Delta t$$
+
+  $$
+  I(t) = I(t - 1) + e(t) \cdot \Delta t
+  $$
 
 - **Derivative Term**:
-  $$D(t) = \frac{e(t) - e(t - 1)}{\Delta t}$$
+
+  $$
+  D(t) = \frac{e(t) - e(t - 1)}{\Delta t}
+  $$
 
 - **Total Control Output**:
-  $$u(t) = K_p \cdot e(t) + K_i \cdot I(t) + K_d \cdot D(t)$$
+
+  $$
+  u(t) = K_p \cdot e(t) + K_i \cdot I(t) + K_d \cdot D(t)
+  $$
 
 The steering output $u(t)$ alters the differential velocities:
 
@@ -169,7 +178,7 @@ $$v_{\text{left}} = V_{\text{base}} - u(t)$$
 
 $$v_{\text{right}} = V_{\text{base}} + u(t)$$
 
-Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le$ `MAX_DIFFERENCE`, capped at 6.0 rad/s) to prevent spinning out or wheel slip.
+Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le \text{MAX\_DIFFERENCE}$, capped at 6.0 rad/s) to prevent spinning out or wheel slip.
 
 ---
 
@@ -178,16 +187,28 @@ Differential limits are clamped ($|v_{\text{left}} - v_{\text{right}}| \le$ `MAX
 The script [`controllers/test1perabots/botwanders.py`](controllers/test1perabots/botwanders.py) automates the tuning of control parameters using continuous oscillation analysis:
 
 1. **Error Stream Sampling**: Webots streams timestamped errors to `error.txt`.
+
 2. **Sub-Sample Zero-Crossing Interpolation**:
-   When consecutive error samples change sign ($e_{k-1} \cdot e_k < 0$), the precise zero-crossing timestamp $t^*$ is computed:
-   $$t^* = t_{k-1} + (0 - e_{k-1}) \cdot \frac{t_k - t_{k-1}}{e_k - e_{k-1}}$$
+   When consecutive error samples change sign ($e_{k-1} \cdot e_k < 0$), the precise zero-crossing timestamp $t^{\ast}$ is computed:
+
+   $$
+   t^{\ast} = t_{k-1} + (0 - e_{k-1}) \cdot \frac{t_k - t_{k-1}}{e_k - e_{k-1}}
+   $$
+
 3. **Ultimate Period ($T_u$) Extraction**:
-   $$T_u = \frac{1}{N} \sum_{i=1}^{N} (t^*_{i+2} - t^*_i)$$
+   From $N$ consecutive zero-crossing intervals, the ultimate oscillation period is calculated:
+
+   $$
+   T_u = \frac{1}{N} \sum_{i=1}^{N} (t^{\ast}_{i+2} - t^{\ast}_i)
+   $$
+
 4. **Ziegler-Nichols Gain Estimation**:
    With ultimate gain $K_u$, the optimal PID parameters are calculated:
-   $$K_p = 0.6 \cdot K_u$$
-   $$K_i = \frac{1.2 \cdot K_u}{T_u}$$
-   $$K_d = 0.075 \cdot K_u \cdot T_u$$
+
+   $$
+   K_p = 0.6 \cdot K_u, \qquad K_i = \frac{1.2 \cdot K_u}{T_u}, \qquad K_d = 0.075 \cdot K_u \cdot T_u
+   $$
+
 5. **Hot-Reload Dispatch**: Updated constants are written into `pid_constants.txt` and immediately integrated by the active simulation.
 
 ---
@@ -258,7 +279,7 @@ PeraBots-2025-Team-Robot-Wanderers/
 | **[`PeraBots_2025_logbook.pdf`](PeraBots_2025_logbook.pdf)** | **Official Team Engineering Logbook** containing detailed documentation of project objectives, hardware modeling, sensor setups, mathematical derivations, test iterations, and meeting minutes. |
 | **[`Robot Wanderers.gif`](Robot%20Wanderers.gif)** | High-resolution simulation animation displaying real-time wall tracking and collision avoidance in Webots. |
 | **[`How to run AUTO TUNE.mp4`](How%20to%20run%20AUTO%20TUNE.mp4)** | Visual video walkthrough demonstrating how to launch and observe the automated PID tuning pipeline. |
-| **[`controllers/test1perabots/test1perabots.c`](controllers/test1perabots/test1perabots.c)** | High-frequency ($31.25\text{ Hz}$) reactive C controller performing distance sensing, region checks, and dynamic motor velocity dispatch. |
+| **[`controllers/test1perabots/test1perabots.c`](controllers/test1perabots/test1perabots.c)** | High-frequency ($\approx 31.25\text{ Hz}$) reactive C controller performing distance sensing, region checks, and dynamic motor velocity dispatch. |
 | **[`controllers/test1perabots/botwanders.py`](controllers/test1perabots/botwanders.py)** | Real-time Python supervisor implementing continuous zero-crossing frequency detection and Ziegler-Nichols parameter generation. |
 | **[`worlds/pera bots.wbt`](worlds/pera%20bots.wbt)** | Primary Webots simulation environment featuring custom arena boundaries and obstacles modeled after the PeraBots 2025 track. |
 | **[`images/`](images/)** | Contains the team logo and the inner vs. outer wall performance benchmarking charts. |
