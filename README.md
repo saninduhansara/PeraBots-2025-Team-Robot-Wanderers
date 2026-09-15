@@ -1,5 +1,9 @@
 <div align="center">
 
+<p align="center">
+  <img src="images/Robot%20Wanderers%20logo.png" alt="Robot Wanderers Logo" width="160" />
+</p>
+
 # 🤖 PeraBots 2025 — Team Robot Wanderers
 ### Autonomous Navigation & Intelligent Closed-Loop Wall-Following in Webots
 
@@ -8,6 +12,7 @@
 [![Tuner: Python](https://img.shields.io/badge/Auto--Tuning-Python%203.x-3776AB?style=for-the-badge&logo=python)](https://www.python.org/)
 [![Control: PID](https://img.shields.io/badge/Algorithm-Ziegler--Nichols%20PID-FF6F00?style=for-the-badge)](https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method)
 [![Competition](https://img.shields.io/badge/Competition-PeraBots%202025-brightgreen?style=for-the-badge)]()
+[![Organizer](https://img.shields.io/badge/Organized%20by-EEES%20%7C%20Univ.%20of%20Peradeniya-003366?style=for-the-badge)](https://eees.pdn.ac.lk/)
 [![Team](https://img.shields.io/badge/Team-Robot%20Wanderers-blueviolet?style=for-the-badge)]()
 
 </div>
@@ -19,6 +24,7 @@
 - [Overview](#-overview)
 - [Key Features](#-key-features)
 - [Simulation Showcase](#-simulation-showcase)
+- [Engineering Logbook](#-engineering-logbook)
 - [System Architecture & Robot Model](#-system-architecture--robot-model)
 - [Control Algorithms & Auto-Tuning](#-control-algorithms--auto-tuning)
   - [1. Dual-Sensor Wall-Following Control](#1-dual-sensor-wall-following-control)
@@ -30,13 +36,14 @@
 - [Prerequisites & Dependencies](#-prerequisites--dependencies)
 - [Getting Started & How to Run](#-getting-started--how-to-run)
 - [Current Tuned Constants](#-current-tuned-constants)
-- [Team & Acknowledgments](#-team--acknowledgments)
+- [Contributors & Team](#-contributors--team)
+- [Acknowledgments](#-acknowledgments)
 
 ---
 
 ## 📖 Overview
 
-Developed for the **PeraBots 2025** robotics competition, this project presents an autonomous differential-drive robotic system designed by **Team Robot Wanderers**. Operating within the **Cyberbotics Webots** physics simulation environment, the robot autonomously explores complex arenas with curved and polygonal walled boundaries.
+Developed for the **PeraBots 2025** robotics competition, organized by the **Electrical and Electronic Engineering Society (EEES)** of the **University of Peradeniya**, Sri Lanka, this project presents an autonomous differential-drive robotic system designed by **Team Robot Wanderers**. Operating within the **Cyberbotics Webots** physics simulation environment, the robot autonomously explores complex arenas with curved and polygonal walled boundaries.
 
 The core challenge revolves around maintaining high-speed, stable wall adherence across both **inner** and **outer wall contours** while rapidly recovering from abrupt corridor shifts, tight corners, and unforeseen obstacles without manual intervention.
 
@@ -66,6 +73,14 @@ The animated demonstration below highlights **Robot Wanderers** navigating the c
 </p>
 
 > 💡 **Tip**: A complete video guide showing the auto-tuning workflow is available in the repository root: [`How to run AUTO TUNE.mp4`](How%20to%20run%20AUTO%20TUNE.mp4).
+
+---
+
+## 📑 Engineering Logbook
+
+All engineering design workflows, mathematical derivations, parameter tuning logs, and milestone notes for **Team Robot Wanderers** throughout the PeraBots 2025 competition are comprehensively documented in our official logbook:
+
+> 📄 **Official Logbook**: [**`PeraBots_2025_logbook.pdf`**](PeraBots_2025_logbook.pdf)
 
 ---
 
@@ -202,21 +217,28 @@ PeraBots-2025-Team-Robot-Wanderers/
 ├── .git/                                # Git version control metadata
 ├── How to run AUTO TUNE.mp4             # Video walkthrough for running auto-tuning
 ├── How to run.txt                       # Quick reference notes
-├── Robot Wanderers.gif                  # Recorded Webots simulation animation
+├── PeraBots_2025_logbook.pdf            # 📑 Official PeraBots 2025 Engineering Logbook
 ├── README.md                            # Comprehensive project documentation
+├── Robot Wanderers.gif                  # Recorded Webots simulation animation
 ├── controllers/
-│   └── test1perabots/
+│   └── test1perabots/                   # Robot controller directory
 │       ├── Makefile                     # Webots build configuration
 │       ├── botwanders.py                # Python Ziegler-Nichols auto-tuner
-│       ├── test1perabots.c              # Primary C robot controller
-│       ├── test1perabots.exe            # Compiled controller executable
-│       ├── pid_constants.txt            # Current live PID constants
+│       ├── test1perabots.c              # Primary C robot controller source
+│       ├── test1perabots.exe            # Compiled controller binary
+│       ├── pid_constants.txt            # Live PID constants (hot-reloaded)
 │       └── error.txt                    # Simulation error logging output
 ├── images/
-│   └── Outer wall and inner wall performance.png  # Performance comparison plot
+│   ├── Outer wall and inner wall performance.png  # Performance comparison plot
+│   └── Robot Wanderers logo.png         # Official Team Robot Wanderers logo
+├── libraries/                           # Custom simulation libraries
 ├── path/
 │   ├── inner_path.obj                   # 3D inner obstacle/wall mesh
 │   └── outer_path.obj                   # 3D outer boundary wall mesh
+├── plugins/                             # Webots simulation plugins
+│   ├── physics/                         # Physics simulation plugin routines
+│   ├── remote_controls/                 # Remote control interfacing
+│   └── robot_windows/                   # Custom robot window interfaces
 ├── protos/
 │   └── Robot.urdf                       # Complete URDF robot model definition
 └── worlds/
@@ -224,6 +246,18 @@ PeraBots-2025-Team-Robot-Wanderers/
     ├── .pera bots.wbproj                # Webots project configuration
     └── .pera bots.jpg                   # World preview thumbnail
 ```
+
+### 🔍 Key File Descriptions
+
+| File / Directory | Description |
+| :--- | :--- |
+| **[`PeraBots_2025_logbook.pdf`](PeraBots_2025_logbook.pdf)** | **Official Team Engineering Logbook** containing detailed documentation of project objectives, hardware modeling, sensor setups, mathematical derivations, test iterations, and meeting minutes. |
+| **[`Robot Wanderers.gif`](Robot%20Wanderers.gif)** | High-resolution simulation animation displaying real-time wall tracking and collision avoidance in Webots. |
+| **[`How to run AUTO TUNE.mp4`](How%20to%20run%20AUTO%20TUNE.mp4)** | Visual video walkthrough demonstrating how to launch and observe the automated PID tuning pipeline. |
+| **[`controllers/test1perabots/test1perabots.c`](controllers/test1perabots/test1perabots.c)** | High-frequency ($31.25\text{ Hz}$) reactive C controller performing distance sensing, region checks, and dynamic motor velocity dispatch. |
+| **[`controllers/test1perabots/botwanders.py`](controllers/test1perabots/botwanders.py)** | Real-time Python supervisor implementing continuous zero-crossing frequency detection and Ziegler-Nichols parameter generation. |
+| **[`worlds/pera bots.wbt`](worlds/pera%20bots.wbt)** | Primary Webots simulation environment featuring custom arena boundaries and obstacles modeled after the PeraBots 2025 track. |
+| **[`images/`](images/)** | Contains the team logo and the inner vs. outer wall performance benchmarking charts. |
 
 ---
 
@@ -305,16 +339,59 @@ The best-performing parameters obtained from our Ziegler-Nichols tuning runs and
 
 ---
 
-## 👥 Team & Acknowledgments
+## 👥 Contributors & Team
 
-- **Team Name**: **Robot Wanderers**
-- **Competition**: **PeraBots 2025**
-- **Platform**: Cyberbotics Webots
+We are **Team Robot Wanderers**, representing the Faculty of Engineering, University of Peradeniya at **PeraBots 2025**.
 
-*Special thanks to the organizing committee of PeraBots 2025 and the open-source robotics community for providing reference environments and simulation tools.*
+<div align="center">
+
+<table align="center" style="border: none; border-collapse: collapse;">
+  <tr align="center" style="border: none;">
+    <td align="center" width="25%" style="border: none; padding: 15px;">
+      <a href="https://people.ce.pdn.ac.lk/students/e22/130/">
+        <img src="https://people.ce.pdn.ac.lk/images/students/e22/e22130.jpg" width="110" height="110" alt="Sanindu Hansara" style="border-radius: 50%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.18);" />
+      </a>
+      <br />
+      <b>Sanindu Hansara</b><br />
+      <sub>University of Peradeniya</sub>
+    </td>
+    <td align="center" width="25%" style="border: none; padding: 15px;">
+      <a href="https://people.ce.pdn.ac.lk/students/e22/008/">
+        <img src="https://people.ce.pdn.ac.lk/images/students/e22/e22008.jpg" width="110" height="110" alt="Thisum Abeywickrama" style="border-radius: 50%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.18);" />
+      </a>
+      <br />
+      <b>Thisum Abeywickrama</b><br />
+      <sub>University of Peradeniya</sub>
+    </td>
+    <td align="center" width="25%" style="border: none; padding: 15px;">
+      <a href="https://github.com/piyuminipunika">
+        <img src="https://avatars.githubusercontent.com/u/267263193?v=4" width="110" height="110" alt="Piyumi Nipunika" style="border-radius: 50%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.18);" />
+      </a>
+      <br />
+      <b>Piyumi Nipunika</b><br />
+      <sub>University of Peradeniya</sub>
+    </td>
+    <td align="center" width="25%" style="border: none; padding: 15px;">
+      <img src="https://ui-avatars.com/api/?name=Tharani+Pathirana&background=0D9488&color=fff&size=150&rounded=true" width="110" height="110" alt="Tharani Pathirana" style="border-radius: 50%; object-fit: cover; box-shadow: 0 4px 12px rgba(0,0,0,0.18);" />
+      <br />
+      <b>Tharani Pathirana</b><br />
+      <sub>University of Peradeniya</sub>
+    </td>
+  </tr>
+</table>
+
+</div>
+
+---
+
+## 🙏 Acknowledgments
+
+- **Electrical and Electronic Engineering Society (EEES)**, University of Peradeniya — for organizing the **PeraBots 2025** competition and fostering student innovation in autonomous robotics.
+- **Department of Electrical & Electronic Engineering** and **Faculty of Engineering, University of Peradeniya** — for continuous academic support and facilities.
+- **Cyberbotics Webots Community** — for developing and maintaining the open-source Webots robot simulator.
 
 ---
 
 <div align="center">
-  <sub>Built with ❤️ by Team Robot Wanderers for PeraBots 2025</sub>
+  <sub>Built with ❤️ by <strong>Team Robot Wanderers</strong> for <strong>PeraBots 2025</strong></sub>
 </div>
